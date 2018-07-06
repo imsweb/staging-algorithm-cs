@@ -19,6 +19,7 @@ import java.util.zip.GZIPInputStream;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.imsweb.decisionengine.Error;
 import com.imsweb.decisionengine.Error.Type;
 import com.imsweb.staging.IntegrationUtils;
 import com.imsweb.staging.IntegrationUtils.IntegrationResult;
@@ -324,6 +325,48 @@ public class CsStagingTest extends StagingTest {
         assertEquals("brain", data.getSchemaId());
         for (com.imsweb.decisionengine.Error error : data.getErrors())
             assertEquals(Type.MATCH_NOT_FOUND, error.getType());
+    }
+
+    @Test
+    public void testErrors() {
+        CsStagingData data = new CsStagingData();
+        data.setInput(CsStagingData.CsInput.PRIMARY_SITE, "C209");
+        data.setInput(CsStagingData.CsInput.HISTOLOGY, "8490");
+        data.setInput(CsStagingData.CsInput.BEHAVIOR, "3");
+        data.setInput(CsStagingData.CsInput.GRADE, "9");
+        data.setInput(CsStagingData.CsInput.DX_YEAR, "2015");
+        data.setInput(CsStagingData.CsInput.CS_VERSION_ORIGINAL, "020550");
+        data.setInput(CsStagingData.CsInput.TUMOR_SIZE, "999");
+        data.setInput(CsStagingData.CsInput.EXTENSION, "455");
+        data.setInput(CsStagingData.CsInput.EXTENSION_EVAL, "9");
+        data.setInput(CsStagingData.CsInput.LYMPH_NODES, "300");
+        data.setInput(CsStagingData.CsInput.LYMPH_NODES_EVAL, "9");
+        data.setInput(CsStagingData.CsInput.REGIONAL_NODES_POSITIVE, "99");
+        data.setInput(CsStagingData.CsInput.REGIONAL_NODES_EXAMINED, "99");
+        data.setInput(CsStagingData.CsInput.METS_AT_DX, "00");
+        data.setInput(CsStagingData.CsInput.METS_EVAL, "9");
+        data.setInput(CsStagingData.CsInput.LVI, "9");
+        data.setInput(CsStagingData.CsInput.AGE_AT_DX, "050");
+        data.setSsf(1, "999");
+        data.setSsf(2, "000");
+        data.setSsf(3, "988");
+        data.setSsf(4, "988");
+        data.setSsf(5, "988");
+        data.setSsf(6, "988");
+        data.setSsf(7, "988");
+        data.setSsf(8, "988");
+        data.setSsf(9, "999");
+        data.setSsf(10, "988");
+
+        // perform the staging
+        _STAGING.stage(data);
+
+        assertEquals(Result.STAGED, data.getResult());
+        assertEquals(4, data.getErrors().size());
+        Error error = data.getErrors().get(0);
+        assertEquals("lymph_nodes_clinical_eval_v0205_ajcc7_xch", error.getTable());
+        assertEquals(Collections.singletonList("ajcc7_n"), error.getColumns());
+        assertEquals("Matching resulted in an error in table 'lymph_nodes_clinical_eval_v0205_ajcc7_xch' for column 'ajcc7_n' (000)", error.getMessage());
     }
 
     @Test
