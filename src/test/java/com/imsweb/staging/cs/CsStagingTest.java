@@ -538,7 +538,7 @@ public class CsStagingTest extends StagingTest {
         data.setInput(CsStagingData.CsInput.HISTOLOGY, "8140");
         data.setInput(CsStagingData.CsInput.BEHAVIOR, "0");
         data.setInput(CsStagingData.CsInput.GRADE, "1");
-        data.setInput(CsStagingData.CsInput.DX_YEAR, "9999");
+        data.setInput(CsStagingData.CsInput.DX_YEAR, "");
         data.setInput(CsStagingData.CsInput.CS_VERSION_ORIGINAL, "010401");
         data.setInput(CsStagingData.CsInput.TUMOR_SIZE, "000");
         data.setInput(CsStagingData.CsInput.EXTENSION, "000");
@@ -566,44 +566,13 @@ public class CsStagingTest extends StagingTest {
         // perform the staging
         _STAGING.stage(data);
 
-        assertEquals("", data.getOutput().get("storageAjcc7TDescriptor"));
-        assertEquals("", data.getOutput().get("displayAjcc7TDescriptor"));
-        assertEquals("", data.getOutput().get("storageAjcc7T"));
-        assertEquals("", data.getOutput().get("displayAjcc7T"));
-        assertEquals("", data.getOutput().get("storageAjcc7NDescriptor"));
-        assertEquals("", data.getOutput().get("displayAjcc7NDescriptor"));
-        assertEquals("", data.getOutput().get("storageAjcc7N"));
-        assertEquals("", data.getOutput().get("displayAjcc7N"));
-        assertEquals("", data.getOutput().get("storageAjcc7MDescriptor"));
-        assertEquals("", data.getOutput().get("displayAjcc7MDescriptor"));
-        assertEquals("", data.getOutput().get("storageAjcc7M"));
-        assertEquals("", data.getOutput().get("displayAjcc7M"));
-        assertEquals("", data.getOutput().get("storageAjcc7StageGroup"));
-        assertEquals("", data.getOutput().get("displayAjcc7StageGroup"));
-
-        assertEquals("c", data.getOutput().get("storageAJCC6TDescriptor"));
-        assertEquals("c", data.getOutput().get("displayAJCC6TDescriptor"));
-        assertEquals("Tis", data.getOutput().get("displayAJCC6T"));
-        assertEquals("c", data.getOutput().get("storageAJCC6NDescriptor"));
-        assertEquals("c", data.getOutput().get("displayAJCC6NDescriptor"));
-        assertEquals("N0", data.getOutput().get("displayAJCC6N"));
-        assertEquals("c", data.getOutput().get("storageAJCC6MDescriptor"));
-        assertEquals("c", data.getOutput().get("displayAJCC6MDescriptor"));
-        assertEquals("M0", data.getOutput().get("displayAJCC6M"));
-        assertEquals("00", data.getOutput().get("storageAJCC6StageGroup"));
-        assertEquals("0", data.getOutput().get("displayAJCC6StageGroup"));
-
-        assertEquals("0", data.getOutput().get("storageSs1977"));
-        assertEquals("IS", data.getOutput().get("displaySs1977"));
-        assertEquals("0", data.getOutput().get("storageSs2000"));
-        assertEquals("IS", data.getOutput().get("displaySs2000"));
-
-        assertEquals("IS", data.getOutput().get("displayT1977"));
-        assertEquals("NONE", data.getOutput().get("displayN1977"));
-        assertEquals("NONE", data.getOutput().get("displayM1977"));
-        assertEquals("IS", data.getOutput().get("displayT2000"));
-        assertEquals("NONE", data.getOutput().get("displayN2000"));
-        assertEquals("NONE", data.getOutput().get("displayM2000"));
+        // verify the AJCC7 values should be null
+        data.getOutput().forEach((k, v) -> {
+            if (k.contains("ajcc7"))
+                assertNull("AJCC7 Key '" + k + " should be null", v);
+            else
+                assertNotNull("Key '" + k + " should not be null", v);
+        });
     }
 
     @Test
