@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
 
 import org.junit.BeforeClass;
@@ -528,6 +529,81 @@ public class CsStagingTest extends StagingTest {
         assertEquals(0, data.getOutput().size());
         assertEquals(0, data.getErrors().size());
         assertEquals(0, data.getPath().size());
+    }
+
+    @Test
+    public void testColonUnknownDxYear() {
+        CsStagingData data = new CsStagingData();
+        data.setInput(CsStagingData.CsInput.PRIMARY_SITE, "C183");
+        data.setInput(CsStagingData.CsInput.HISTOLOGY, "8140");
+        data.setInput(CsStagingData.CsInput.BEHAVIOR, "0");
+        data.setInput(CsStagingData.CsInput.GRADE, "1");
+        data.setInput(CsStagingData.CsInput.DX_YEAR, "9999");
+        data.setInput(CsStagingData.CsInput.CS_VERSION_ORIGINAL, "010401");
+        data.setInput(CsStagingData.CsInput.TUMOR_SIZE, "000");
+        data.setInput(CsStagingData.CsInput.EXTENSION, "000");
+        data.setInput(CsStagingData.CsInput.EXTENSION_EVAL, "0");
+        data.setInput(CsStagingData.CsInput.LYMPH_NODES, "000");
+        data.setInput(CsStagingData.CsInput.LYMPH_NODES_EVAL, "0");
+        data.setInput(CsStagingData.CsInput.REGIONAL_NODES_POSITIVE, "00");
+        data.setInput(CsStagingData.CsInput.REGIONAL_NODES_EXAMINED, "00");
+        data.setInput(CsStagingData.CsInput.METS_AT_DX, "00");
+        data.setInput(CsStagingData.CsInput.METS_EVAL, "0");
+        data.setInput(CsStagingData.CsInput.LVI, "0");
+        data.setInput(CsStagingData.CsInput.AGE_AT_DX, "0");
+        data.setSsf(1, "000");
+        data.setSsf(2, "000");
+        data.setSsf(3, "000");
+        data.setSsf(4, "000");
+        data.setSsf(5, "000");
+        data.setSsf(6, "000");
+        data.setSsf(7, "020");
+        data.setSsf(8, "000");
+        data.setSsf(9, "010");
+        data.setSsf(10, "010");
+        IntStream.rangeClosed(11, 25).forEach(i -> data.setSsf(i, "988"));
+
+        // perform the staging
+        _STAGING.stage(data);
+
+        assertEquals("", data.getOutput().get("storageAjcc7TDescriptor"));
+        assertEquals("", data.getOutput().get("displayAjcc7TDescriptor"));
+        assertEquals("", data.getOutput().get("storageAjcc7T"));
+        assertEquals("", data.getOutput().get("displayAjcc7T"));
+        assertEquals("", data.getOutput().get("storageAjcc7NDescriptor"));
+        assertEquals("", data.getOutput().get("displayAjcc7NDescriptor"));
+        assertEquals("", data.getOutput().get("storageAjcc7N"));
+        assertEquals("", data.getOutput().get("displayAjcc7N"));
+        assertEquals("", data.getOutput().get("storageAjcc7MDescriptor"));
+        assertEquals("", data.getOutput().get("displayAjcc7MDescriptor"));
+        assertEquals("", data.getOutput().get("storageAjcc7M"));
+        assertEquals("", data.getOutput().get("displayAjcc7M"));
+        assertEquals("", data.getOutput().get("storageAjcc7StageGroup"));
+        assertEquals("", data.getOutput().get("displayAjcc7StageGroup"));
+
+        assertEquals("c", data.getOutput().get("storageAJCC6TDescriptor"));
+        assertEquals("c", data.getOutput().get("displayAJCC6TDescriptor"));
+        assertEquals("Tis", data.getOutput().get("displayAJCC6T"));
+        assertEquals("c", data.getOutput().get("storageAJCC6NDescriptor"));
+        assertEquals("c", data.getOutput().get("displayAJCC6NDescriptor"));
+        assertEquals("N0", data.getOutput().get("displayAJCC6N"));
+        assertEquals("c", data.getOutput().get("storageAJCC6MDescriptor"));
+        assertEquals("c", data.getOutput().get("displayAJCC6MDescriptor"));
+        assertEquals("M0", data.getOutput().get("displayAJCC6M"));
+        assertEquals("00", data.getOutput().get("storageAJCC6StageGroup"));
+        assertEquals("0", data.getOutput().get("displayAJCC6StageGroup"));
+
+        assertEquals("0", data.getOutput().get("storageSs1977"));
+        assertEquals("IS", data.getOutput().get("displaySs1977"));
+        assertEquals("0", data.getOutput().get("storageSs2000"));
+        assertEquals("IS", data.getOutput().get("displaySs2000"));
+
+        assertEquals("IS", data.getOutput().get("displayT1977"));
+        assertEquals("NONE", data.getOutput().get("displayN1977"));
+        assertEquals("NONE", data.getOutput().get("displayM1977"));
+        assertEquals("IS", data.getOutput().get("displayT2000"));
+        assertEquals("NONE", data.getOutput().get("displayN2000"));
+        assertEquals("NONE", data.getOutput().get("displayM2000"));
     }
 
     @Test
