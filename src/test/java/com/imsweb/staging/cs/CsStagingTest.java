@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
 
 import org.junit.BeforeClass;
@@ -528,6 +529,50 @@ public class CsStagingTest extends StagingTest {
         assertEquals(0, data.getOutput().size());
         assertEquals(0, data.getErrors().size());
         assertEquals(0, data.getPath().size());
+    }
+
+    @Test
+    public void testColonUnknownDxYear() {
+        CsStagingData data = new CsStagingData();
+        data.setInput(CsStagingData.CsInput.PRIMARY_SITE, "C183");
+        data.setInput(CsStagingData.CsInput.HISTOLOGY, "8140");
+        data.setInput(CsStagingData.CsInput.BEHAVIOR, "0");
+        data.setInput(CsStagingData.CsInput.GRADE, "1");
+        data.setInput(CsStagingData.CsInput.DX_YEAR, "");
+        data.setInput(CsStagingData.CsInput.CS_VERSION_ORIGINAL, "010401");
+        data.setInput(CsStagingData.CsInput.TUMOR_SIZE, "000");
+        data.setInput(CsStagingData.CsInput.EXTENSION, "000");
+        data.setInput(CsStagingData.CsInput.EXTENSION_EVAL, "0");
+        data.setInput(CsStagingData.CsInput.LYMPH_NODES, "000");
+        data.setInput(CsStagingData.CsInput.LYMPH_NODES_EVAL, "0");
+        data.setInput(CsStagingData.CsInput.REGIONAL_NODES_POSITIVE, "00");
+        data.setInput(CsStagingData.CsInput.REGIONAL_NODES_EXAMINED, "00");
+        data.setInput(CsStagingData.CsInput.METS_AT_DX, "00");
+        data.setInput(CsStagingData.CsInput.METS_EVAL, "0");
+        data.setInput(CsStagingData.CsInput.LVI, "0");
+        data.setInput(CsStagingData.CsInput.AGE_AT_DX, "0");
+        data.setSsf(1, "000");
+        data.setSsf(2, "000");
+        data.setSsf(3, "000");
+        data.setSsf(4, "000");
+        data.setSsf(5, "000");
+        data.setSsf(6, "000");
+        data.setSsf(7, "020");
+        data.setSsf(8, "000");
+        data.setSsf(9, "010");
+        data.setSsf(10, "010");
+        IntStream.rangeClosed(11, 25).forEach(i -> data.setSsf(i, "988"));
+
+        // perform the staging
+        _STAGING.stage(data);
+
+        // verify the AJCC7 values should be null
+        data.getOutput().forEach((k, v) -> {
+            if (k.contains("ajcc7"))
+                assertNull("AJCC7 Key '" + k + " should be null", v);
+            else
+                assertNotNull("Key '" + k + " should not be null", v);
+        });
     }
 
     @Test
