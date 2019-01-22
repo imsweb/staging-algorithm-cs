@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.imsweb:staging-client-java:4.5-SNAPSHOT'
+    implementation 'com.imsweb:staging-client-java:4.5'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.squareup.retrofit2:retrofit:2.4.0'
