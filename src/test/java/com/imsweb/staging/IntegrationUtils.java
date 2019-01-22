@@ -221,7 +221,10 @@ public final class IntegrationUtils {
                     CsStagingData data = new CsStagingData();
                     data.setInput(CsInput.PRIMARY_SITE, values[0]);
                     data.setInput(CsInput.HISTOLOGY, values[1]);
-                    data.setInput(CsInput.DX_YEAR, values[2]);
+
+                    // the test data was originally set up to use 2019 as an invalid year.  Since it is now 2019 that causes failures.  Manually setting to 2049.
+                    data.setInput(CsInput.DX_YEAR, ("2019".equals(values[2]) ? "2049" : values[2]));
+
                     data.setInput(CsInput.CS_VERSION_ORIGINAL, values[3]);
                     data.setInput(CsInput.BEHAVIOR, values[4]);
                     data.setInput(CsInput.GRADE, values[5]);
