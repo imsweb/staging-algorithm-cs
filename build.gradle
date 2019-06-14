@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.imsweb'
-version = '02.05.50.2'
+version = '02.05.50.3'
 description = 'Collaborative Stage algorithm for the java-staging-client'
 
 tasks.withType(JavaCompile) {
@@ -29,11 +29,11 @@ repositories {
 }
 
 dependencies {
-    api 'com.imsweb:staging-client-java:4.6'
+    api 'com.imsweb:staging-client-java:4.7'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    testImplementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
+    testImplementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    testImplementation 'com.squareup.retrofit2:converter-jackson:2.6.0'
 }
 
 jar {
@@ -72,7 +72,7 @@ if (version.endsWith('-SNAPSHOT'))
     gradle.startParameter.excludedTaskNames += 'closeAndReleaseRepository'
 
 wrapper {
-    gradleVersion = '5.3.1'
+    gradleVersion = '5.4.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
