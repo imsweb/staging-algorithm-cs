@@ -1,6 +1,6 @@
 # staging-algorithm-cs
 
-[![CircleCI](https://circleci.com/gh/imsweb/staging-algorithm-cs.svg?style=shield)](https://circleci.com/gh/imsweb/staging-algorithm-cs)
+[![integration](https://github.com/imsweb/staging-algorithm-cs/workflows/integration/badge.svg)](https://github.com/imsweb/staging-algorithm-cs/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.imsweb/staging-algorithm-cs/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.imsweb/staging-algorithm-cs)
 
 [Collaborative Stage](https://cancerstaging.org/cstage/) is a unified data collection system designed to provide a common data set to meet the 
