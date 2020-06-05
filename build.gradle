@@ -12,7 +12,7 @@ plugins {
 }
 
 group = 'com.imsweb'
-version = '02.05.50.3'
+version = '02.05.50.4-SNAPSHOT'
 description = 'Collaborative Stage algorithm for the java-staging-client'
 
 tasks.withType(JavaCompile) {
