@@ -24,7 +24,7 @@ Download [the latest JAR][1] or grab via Maven:
 or via Gradle:
 
 ```groovy
-compile 'com.imsweb.com:staging-algorithm-cs:02.05.50.4'
+compile 'com.imsweb:staging-algorithm-cs:02.05.50.4'
 ```
 
 ## Usage
