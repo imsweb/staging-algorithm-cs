@@ -17,14 +17,14 @@ Download [the latest JAR][1] or grab via Maven:
 <dependency>
     <groupId>com.imsweb</groupId>
     <artifactId>staging-algorithm-cs</artifactId>
-    <version>02.05.50.5</version>
+    <version>02.05.50.6</version>
 </dependency>
 ```
 
 or via Gradle:
 
 ```groovy
-compile 'com.imsweb:staging-algorithm-cs:02.05.50.5'
+compile 'com.imsweb:staging-algorithm-cs:02.05.50.6'
 ```
 
 ## Usage
