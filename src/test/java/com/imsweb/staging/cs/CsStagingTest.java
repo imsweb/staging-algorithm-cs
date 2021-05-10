@@ -22,24 +22,23 @@ import java.util.zip.GZIPInputStream;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.imsweb.decisionengine.Error;
-import com.imsweb.decisionengine.Error.Type;
-import com.imsweb.decisionengine.Input;
-import com.imsweb.decisionengine.Range;
-import com.imsweb.decisionengine.Schema;
-import com.imsweb.decisionengine.Table;
-import com.imsweb.decisionengine.TableRow;
 import com.imsweb.staging.IntegrationUtils;
 import com.imsweb.staging.IntegrationUtils.IntegrationResult;
-import com.imsweb.staging.SchemaLookup;
 import com.imsweb.staging.Staging;
-import com.imsweb.staging.StagingData;
-import com.imsweb.staging.StagingData.Result;
 import com.imsweb.staging.StagingFileDataProvider;
 import com.imsweb.staging.StagingTest;
 import com.imsweb.staging.cs.CsDataProvider.CsVersion;
 import com.imsweb.staging.cs.CsStagingData.CsOutput;
 import com.imsweb.staging.cs.CsStagingData.CsStagingInputBuilder;
+import com.imsweb.staging.entities.Error.Type;
+import com.imsweb.staging.entities.Input;
+import com.imsweb.staging.entities.Range;
+import com.imsweb.staging.entities.Schema;
+import com.imsweb.staging.entities.SchemaLookup;
+import com.imsweb.staging.entities.StagingData;
+import com.imsweb.staging.entities.StagingData.Result;
+import com.imsweb.staging.entities.Table;
+import com.imsweb.staging.entities.TableRow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -326,7 +325,7 @@ public class CsStagingTest extends StagingTest {
 
         assertEquals(Result.STAGED, data.getResult());
         assertEquals("brain", data.getSchemaId());
-        for (com.imsweb.decisionengine.Error error : data.getErrors())
+        for (com.imsweb.staging.entities.Error error : data.getErrors())
             assertEquals(Type.MATCH_NOT_FOUND, error.getType());
     }
 
@@ -366,7 +365,7 @@ public class CsStagingTest extends StagingTest {
 
         assertEquals(Result.STAGED, data.getResult());
         assertEquals(4, data.getErrors().size());
-        Error error = data.getErrors().get(0);
+        com.imsweb.staging.entities.Error error = data.getErrors().get(0);
         assertEquals("lymph_nodes_clinical_eval_v0205_ajcc7_xch", error.getTable());
         assertEquals(Collections.singletonList("ajcc7_n"), error.getColumns());
         assertEquals("Matching resulted in an error in table 'lymph_nodes_clinical_eval_v0205_ajcc7_xch' for column 'ajcc7_n' (000)", error.getMessage());

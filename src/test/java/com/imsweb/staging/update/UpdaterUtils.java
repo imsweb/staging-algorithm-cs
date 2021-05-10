@@ -24,8 +24,8 @@ import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import com.imsweb.staging.entities.StagingSchema;
-import com.imsweb.staging.entities.StagingTable;
+import com.imsweb.staging.entities.impl.StagingSchema;
+import com.imsweb.staging.entities.impl.StagingTable;
 import com.imsweb.staging.util.Stopwatch;
 
 /**

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,12 +23,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
-import com.imsweb.decisionengine.Schema;
 import com.imsweb.staging.cs.CsStagingData;
 import com.imsweb.staging.cs.CsStagingData.CsInput;
 import com.imsweb.staging.cs.CsStagingData.CsOutput;
+import com.imsweb.staging.entities.Schema;
+import com.imsweb.staging.entities.SchemaLookup;
 import com.imsweb.staging.util.Stopwatch;
 
 public final class IntegrationUtils {
@@ -50,7 +51,7 @@ public final class IntegrationUtils {
 
         System.out.println("Starting schema selection tests from " + fileName + " [" + n + " threads]");
 
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(is, "UTF-8"));
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
         // loop over each line in the file
         String line = reader.readLine();
@@ -124,8 +125,6 @@ public final class IntegrationUtils {
      * @param fileName name of file
      * @param is InputStream
      * @return IntegrationResult
-     * @throws IOException
-     * @throws InterruptedException
      */
     public static IntegrationResult processSchema(Staging staging, String fileName, InputStream is) throws IOException, InterruptedException {
         return processSchema(staging, fileName, is, null);
@@ -138,8 +137,6 @@ public final class IntegrationUtils {
      * @param is InputStream
      * @param singleLineNumber if not null, only process this line number
      * @return IntegrationResult
-     * @throws IOException
-     * @throws InterruptedException
      */
     public static IntegrationResult processSchema(final Staging staging, final String fileName, InputStream is, Integer singleLineNumber) throws IOException, InterruptedException {
         // set up a mapping of output field positions in the CSV file
@@ -198,7 +195,7 @@ public final class IntegrationUtils {
         else
             System.out.println("Starting " + fileName + " [" + n + " threads]");
 
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(is, "UTF-8"));
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
         // loop over each line in the file
         String line = reader.readLine();
@@ -306,7 +303,7 @@ public final class IntegrationUtils {
                                 System.out.println("   " + lineNum + " --> " + convertInputMap(data.getInput()));
                                 if (data.getErrors().size() > 0) {
                                     System.out.print("   " + lineNum + " --> ERRORS: ");
-                                    for (com.imsweb.decisionengine.Error e : data.getErrors())
+                                    for (com.imsweb.staging.entities.Error e : data.getErrors())
                                         System.out.print("(" + e.getTable() + ": " + e.getMessage() + ") ");
                                     System.out.println();
                                 }
@@ -351,7 +348,7 @@ public final class IntegrationUtils {
         List<String> inputValues = new ArrayList<>();
         for (Map.Entry<String, String> entry : input.entrySet())
             inputValues.add("\"" + entry.getKey() + "\": \"" + entry.getValue() + "\"");
-        return "{ " + inputValues.stream().collect(Collectors.joining(",")) + " }";
+        return "{ " + String.join(",", inputValues) + " }";
     }
 
     /**
@@ -359,8 +356,8 @@ public final class IntegrationUtils {
      */
     public static class IntegrationResult {
 
-        private long _numCases;
-        private long _numFailures;
+        private final long _numCases;
+        private final long _numFailures;
 
         public IntegrationResult(long numCases, long numFailures) {
             _numCases = numCases;
