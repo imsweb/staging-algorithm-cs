@@ -47,8 +47,8 @@ public class CsIntegrationTest {
 
         // only do schema selection test if running all schemas
         if (_SCHEMA_FILES.isEmpty()) {
-            IntegrationUtils.processSchemaSelection(staging, "cs_schema_identification.txt.gz", new GZIPInputStream(new FileInputStream(new File(
-                    dataDirectory + "/schema_selection/cs_schema_identification.txt.gz"))));
+            IntegrationUtils.processSchemaSelection(staging, "cs_schema_identification.txt.gz", new GZIPInputStream(new FileInputStream(
+                    dataDirectory + "/schema_selection/cs_schema_identification.txt.gz")));
 
             System.out.println("-----------------------------------------------");
         }
@@ -82,7 +82,7 @@ public class CsIntegrationTest {
         stopwatch.stop();
 
         String perMs = String.format("%.3f", ((float)stopwatch.elapsed(TimeUnit.MILLISECONDS) / totalCases));
-        System.out.println("");
+        System.out.println();
         System.out.println("Completed " + NumberFormat.getNumberInstance(Locale.US).format(totalCases) + " cases (" + totalFiles + " files) in " + stopwatch + " (" + perMs + "ms/case).");
         if (totalFailures > 0)
             System.out.println("There were " + totalFailures + " failing cases.");

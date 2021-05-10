@@ -6,6 +6,7 @@ package com.imsweb.staging.cs;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
@@ -22,6 +24,11 @@ import org.junit.Test;
 
 import com.imsweb.decisionengine.Error;
 import com.imsweb.decisionengine.Error.Type;
+import com.imsweb.decisionengine.Input;
+import com.imsweb.decisionengine.Range;
+import com.imsweb.decisionengine.Schema;
+import com.imsweb.decisionengine.Table;
+import com.imsweb.decisionengine.TableRow;
 import com.imsweb.staging.IntegrationUtils;
 import com.imsweb.staging.IntegrationUtils.IntegrationResult;
 import com.imsweb.staging.SchemaLookup;
@@ -33,11 +40,6 @@ import com.imsweb.staging.StagingTest;
 import com.imsweb.staging.cs.CsDataProvider.CsVersion;
 import com.imsweb.staging.cs.CsStagingData.CsOutput;
 import com.imsweb.staging.cs.CsStagingData.CsStagingInputBuilder;
-import com.imsweb.staging.entities.StagingRange;
-import com.imsweb.staging.entities.StagingSchema;
-import com.imsweb.staging.entities.StagingSchemaInput;
-import com.imsweb.staging.entities.StagingTable;
-import com.imsweb.staging.entities.StagingTableRow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -95,7 +97,7 @@ public class CsStagingTest extends StagingTest {
     @Test
     public void testSchemaSelection() {
         // test bad values
-        List<StagingSchema> lookup = _STAGING.lookupSchema(new SchemaLookup());
+        List<Schema> lookup = _STAGING.lookupSchema(new SchemaLookup());
         assertEquals(0, lookup.size());
 
         lookup = _STAGING.lookupSchema(new CsSchemaLookup("XXX", "YYY"));
@@ -123,13 +125,13 @@ public class CsStagingTest extends StagingTest {
         // test valid combination that requires a discriminator but is not supplied one
         lookup = _STAGING.lookupSchema(new CsSchemaLookup("C111", "8200"));
         assertEquals(2, lookup.size());
-        for (StagingSchema schema : lookup)
+        for (Schema schema : lookup)
             assertEquals(new HashSet<>(Collections.singletonList("ssf25")), schema.getSchemaDiscriminators());
 
         // test valid combination that requires discriminator and a good discriminator is supplied
         lookup = _STAGING.lookupSchema(new CsSchemaLookup("C111", "8200", "010"));
         assertEquals(1, lookup.size());
-        for (StagingSchema schema : lookup)
+        for (Schema schema : lookup)
             assertEquals(new HashSet<>(Collections.singletonList("ssf25")), schema.getSchemaDiscriminators());
         assertEquals("nasopharynx", lookup.get(0).getId());
         assertEquals(Integer.valueOf(34), lookup.get(0).getSchemaNum());
@@ -164,7 +166,7 @@ public class CsStagingTest extends StagingTest {
     @Test
     public void testLookupCache() {
         // do the same lookup twice
-        List<StagingSchema> lookup = _STAGING.lookupSchema(new CsSchemaLookup("C629", "9231", ""));
+        List<Schema> lookup = _STAGING.lookupSchema(new CsSchemaLookup("C629", "9231", ""));
         assertEquals(1, lookup.size());
         assertEquals("testis", lookup.get(0).getId());
 
@@ -185,7 +187,7 @@ public class CsStagingTest extends StagingTest {
     public void testSchemaSelectionIntegration() throws IOException, InterruptedException {
         // test complete file of cases
         IntegrationResult result = IntegrationUtils.processSchemaSelection(_STAGING, "cs_schema_identification_unit_test.txt.gz",
-                new GZIPInputStream(Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data/cs/020550/cs_schema_identification_unit_test.txt.gz")));
+                new GZIPInputStream(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data/cs/020550/cs_schema_identification_unit_test.txt.gz"))));
         assertEquals(0, result.getNumFailures());
     }
 
@@ -208,7 +210,7 @@ public class CsStagingTest extends StagingTest {
                 "SubmandibularGland", "Testis", "Thyroid", "TongueAnterior", "TongueBase", "Trachea", "Urethra", "UrinaryOther", "Vagina", "Vulva");
 
         for (String id : _STAGING.getSchemaIds()) {
-            StagingSchema schema = _STAGING.getSchema(id);
+            Schema schema = _STAGING.getSchema(id);
             if (!oldNames.contains(schema.getName()))
                 fail("The schema name " + schema.getName() + " is not one of the original names.");
         }
@@ -745,7 +747,7 @@ public class CsStagingTest extends StagingTest {
 
     @Test
     public void testStagingInputsAndOutputs() {
-        StagingSchema schema = _STAGING.getSchema("testis");
+        Schema schema = _STAGING.getSchema("testis");
 
         assertEquals("Inputs do not match",
                 new HashSet<>(Arrays.asList("cs_input_version_original", "extension", "extension_eval", "site", "hist", "lvi", "mets_eval", "mets", "nodes",
@@ -807,9 +809,9 @@ public class CsStagingTest extends StagingTest {
     @Test
     public void testExpectedOutput() throws Exception {
         IntegrationResult ajcc6Result = IntegrationUtils.processSchema(_STAGING, "AJCC_6.V020550.txt.gz",
-                new GZIPInputStream(Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data/cs/020550/AJCC_6.V020550.txt.gz")));
+                new GZIPInputStream(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data/cs/020550/AJCC_6.V020550.txt.gz"))));
         IntegrationResult ajcc7Result = IntegrationUtils.processSchema(_STAGING, "AJCC_7.V020550.txt.gz",
-                new GZIPInputStream(Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data/cs/020550/AJCC_7.V020550.txt.gz")));
+                new GZIPInputStream(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data/cs/020550/AJCC_7.V020550.txt.gz"))));
 
         // make sure there were no errors returned
         assertEquals("There were failures in the AJCC6 tests", 0, ajcc6Result.getNumFailures());
@@ -818,8 +820,8 @@ public class CsStagingTest extends StagingTest {
 
     @Test
     public void testAllValidInputs() throws IOException {
-        GZIPInputStream is = new GZIPInputStream(Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data/cs/020550/valid_inputs.020550.txt.gz"));
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(is, "UTF-8"));
+        GZIPInputStream is = new GZIPInputStream(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data/cs/020550/valid_inputs.020550.txt.gz")));
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
         // cache a list of schemas by name
         Map<String, String> nameMap = new HashMap<>();
@@ -833,7 +835,7 @@ public class CsStagingTest extends StagingTest {
             assertEquals(3, values.length);
 
             // get schema by schema name
-            StagingSchema schema = _STAGING.getSchema(nameMap.get(values[0]));
+            Schema schema = _STAGING.getSchema(nameMap.get(values[0]));
             assertTrue("The value '" + values[2] + "' is not valid for table '" + values[1] + "' and schema '" + values[0] + "'", _STAGING.isCodeValid(schema.getId(), values[1], values[2]));
 
             line = reader.readLine();
@@ -854,11 +856,11 @@ public class CsStagingTest extends StagingTest {
         Set<String> errors = new HashSet<>();
 
         for (String schemaId : _STAGING.getSchemaIds()) {
-            StagingSchema schema = _STAGING.getSchema(schemaId);
+            Schema schema = _STAGING.getSchema(schemaId);
 
             // build a list of input tables that should be excluded
             Map<String, Integer> inputTableLengths = new HashMap<>();
-            for (StagingSchemaInput input : schema.getInputs())
+            for (Input input : schema.getInputs())
                 if (input.getTable() != null)
                     inputTableLengths.put(input.getTable(), getInputLength(input.getTable(), input.getKey()));
 
@@ -867,12 +869,12 @@ public class CsStagingTest extends StagingTest {
                 if (inputTableLengths.containsKey(tableId))
                     continue;
 
-                StagingTable table = _STAGING.getTable(tableId);
+                Table table = _STAGING.getTable(tableId);
 
                 // loop over each row
-                for (StagingTableRow row : table.getTableRows()) {
+                for (TableRow row : table.getTableRows()) {
                     // loop over all input cells
-                    for (Map.Entry<String, List<StagingRange>> entry : row.getInputs().entrySet()) {
+                    for (Map.Entry<String, List<Range>> entry : row.getInputs().entrySet()) {
                         String key = entry.getKey();
 
                         // only validate keys that are actually INPUT values
@@ -887,7 +889,7 @@ public class CsStagingTest extends StagingTest {
                         Integer expectedFieldLength = inputTableLengths.get(validationTableId);
 
                         // loop over list of ranges
-                        for (StagingRange range : entry.getValue()) {
+                        for (Range range : entry.getValue()) {
                             String low = range.getLow();
                             String high = range.getHigh();
 

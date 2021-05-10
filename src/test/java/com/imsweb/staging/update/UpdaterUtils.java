@@ -43,7 +43,7 @@ public final class UpdaterUtils {
 
     private static final String _BASE_DIRECTORY = "c:/tmp/algorithms";
 
-    private static Pattern _ID_CHARACTERS = Pattern.compile("[a-z0-9_]+");
+    private static final Pattern _ID_CHARACTERS = Pattern.compile("[a-z0-9_]+");
 
     @SuppressWarnings("ConstantConditions")
     public static void update(String algorithm, String version) throws IOException {

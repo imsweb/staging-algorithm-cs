@@ -24,10 +24,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import com.imsweb.decisionengine.Schema;
 import com.imsweb.staging.cs.CsStagingData;
 import com.imsweb.staging.cs.CsStagingData.CsInput;
 import com.imsweb.staging.cs.CsStagingData.CsOutput;
-import com.imsweb.staging.entities.StagingSchema;
 import com.imsweb.staging.util.Stopwatch;
 
 public final class IntegrationUtils {
@@ -72,7 +72,7 @@ public final class IntegrationUtils {
                         SchemaLookup lookup = new SchemaLookup(parts[0], parts[1]);
                         lookup.setInput(CsStagingData.SSF25_KEY, parts[2]);
 
-                        List<StagingSchema> lookups = staging.lookupSchema(lookup);
+                        List<Schema> lookups = staging.lookupSchema(lookup);
                         if (parts[3].length() == 0) {
                             if (lookups.size() == 1) {
                                 System.out.println("Line #" + lineNum + " [" + fullLine + "] --> The schema selection should not have found any schema but did: " + lookups.get(0).getId());
@@ -274,7 +274,7 @@ public final class IntegrationUtils {
                         // run collaborative stage; if no schema found, set the output to empty
                         SchemaLookup lookup = new SchemaLookup(data.getInput(CsInput.PRIMARY_SITE), data.getInput(CsInput.HISTOLOGY));
                         lookup.setInput(CsStagingData.SSF25_KEY, data.getInput(CsInput.SSF25));
-                        List<StagingSchema> schemas = staging.lookupSchema(lookup);
+                        List<Schema> schemas = staging.lookupSchema(lookup);
 
                         if (schemas.size() == 1)
                             staging.stage(data);
