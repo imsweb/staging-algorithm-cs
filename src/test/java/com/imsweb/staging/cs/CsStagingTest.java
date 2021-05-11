@@ -873,9 +873,7 @@ public class CsStagingTest extends StagingTest {
                 // loop over each row
                 for (TableRow row : table.getTableRows()) {
                     // loop over all input cells
-                    for (Map.Entry<String, List<Range>> entry : row.getInputs().entrySet()) {
-                        String key = entry.getKey();
-
+                    for (String key : row.getColumns()) {
                         // only validate keys that are actually INPUT values
                         if (!schema.getInputMap().containsKey(key))
                             continue;
@@ -888,7 +886,7 @@ public class CsStagingTest extends StagingTest {
                         Integer expectedFieldLength = inputTableLengths.get(validationTableId);
 
                         // loop over list of ranges
-                        for (Range range : entry.getValue()) {
+                        for (Range range : row.getColumnInput(key)) {
                             String low = range.getLow();
                             String high = range.getHigh();
 
