@@ -16,14 +16,13 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import com.imsweb.decisionengine.ColumnDefinition;
-import com.imsweb.staging.entities.StagingColumnDefinition;
-import com.imsweb.staging.entities.StagingMapping;
-import com.imsweb.staging.entities.StagingRange;
-import com.imsweb.staging.entities.StagingSchema;
-import com.imsweb.staging.entities.StagingSchemaInput;
-import com.imsweb.staging.entities.StagingTable;
-import com.imsweb.staging.entities.StagingTableRow;
+import com.imsweb.staging.entities.ColumnDefinition;
+import com.imsweb.staging.entities.Input;
+import com.imsweb.staging.entities.Mapping;
+import com.imsweb.staging.entities.Range;
+import com.imsweb.staging.entities.Schema;
+import com.imsweb.staging.entities.Table;
+import com.imsweb.staging.entities.TableRow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -63,7 +62,7 @@ public abstract class StagingTest {
     @Test
     public void testInitAllTables() {
         for (String id : _STAGING.getTableIds()) {
-            StagingTable table = _STAGING.getTable(id);
+            Table table = _STAGING.getTable(id);
 
             assertNotNull(table);
             assertNotNull(table.getAlgorithm());
@@ -95,8 +94,8 @@ public abstract class StagingTest {
     public void testBasicInputs() {
         // all inputs for all schemas will have null unit and decimal places
         for (String id : _STAGING.getSchemaIds()) {
-            StagingSchema schema = _STAGING.getSchema(id);
-            for (StagingSchemaInput input : schema.getInputs()) {
+            Schema schema = _STAGING.getSchema(id);
+            for (Input input : schema.getInputs()) {
                 assertNull("No schemas should have units", input.getUnit());
                 assertNull("No schemas should have decimal places", input.getDecimalPlaces());
             }
@@ -169,20 +168,20 @@ public abstract class StagingTest {
         Set<String> errors = new HashSet<>();
 
         for (String schemaId : _STAGING.getSchemaIds()) {
-            StagingSchema schema = _STAGING.getSchema(schemaId);
+            Schema schema = _STAGING.getSchema(schemaId);
 
             // build a list of input tables that should be excluded
-            for (StagingSchemaInput input : schema.getInputs()) {
+            for (Input input : schema.getInputs()) {
                 if (input.getTable() != null) {
                     Set<String> inputKeys = new HashSet<>();
-                    StagingTable table = _STAGING.getTable(input.getTable());
-                    for (StagingColumnDefinition def : table.getColumnDefinitions())
+                    Table table = _STAGING.getTable(input.getTable());
+                    for (ColumnDefinition def : table.getColumnDefinitions())
                         if (ColumnDefinition.ColumnType.INPUT.equals(def.getType()))
                             inputKeys.add(def.getKey());
 
                     // make sure the input key matches the an input column
                     if (!inputKeys.contains(input.getKey()))
-                        errors.add("Input key " + schemaId + ":" + input.getKey() + " does not match validation table " + table.getId() + ": " + inputKeys.toString());
+                        errors.add("Input key " + schemaId + ":" + input.getKey() + " does not match validation table " + table.getId() + ": " + inputKeys);
                 }
             }
         }
@@ -195,7 +194,7 @@ public abstract class StagingTest {
         List<String> errors = new ArrayList<>();
 
         for (String id : _STAGING.getSchemaIds()) {
-            StagingSchema schema = _STAGING.getSchema(id);
+            Schema schema = _STAGING.getSchema(id);
 
             // loop over all the inputs returned by processing the schema and make sure they are all part of the main list of inputs on the schema
             for (String input : _STAGING.getInputs(schema))
@@ -211,14 +210,13 @@ public abstract class StagingTest {
         Set<String> errors = new HashSet<>();
 
         for (String schemaId : _STAGING.getSchemaIds()) {
-            StagingSchema schema = _STAGING.getSchema(schemaId);
+            Schema schema = _STAGING.getSchema(schemaId);
 
             // build a list of input tables that should be excluded
             Set<String> ids = new HashSet<>();
 
-            List<StagingMapping> mappings = schema.getMappings();
-            if (mappings != null)
-                for (StagingMapping mapping : mappings) {
+            if (schema.getMappings() != null)
+                for (Mapping mapping : schema.getMappings()) {
                     if (ids.contains(mapping.getId()))
                         errors.add("The mapping id " + schemaId + ":" + mapping.getId() + " is duplicated.  This should never happen");
                     ids.add(mapping.getId());
@@ -246,14 +244,12 @@ public abstract class StagingTest {
      * @return null if no length couild be determined, or the length
      */
     protected Integer getInputLength(String tableId, String key) {
-        StagingTable table = _STAGING.getTable(tableId);
+        Table table = _STAGING.getTable(tableId);
         Integer length = null;
 
         // loop over each row
-        for (StagingTableRow row : table.getTableRows()) {
-            List<StagingRange> ranges = row.getInputs().get(key);
-
-            for (StagingRange range : ranges) {
+        for (TableRow row : table.getTableRows()) {
+            for (Range range : row.getColumnInput(key)) {
                 String low = range.getLow();
                 String high = range.getHigh();
 

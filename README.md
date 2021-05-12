@@ -17,14 +17,14 @@ Download [the latest JAR][1] or grab via Maven:
 <dependency>
     <groupId>com.imsweb</groupId>
     <artifactId>staging-algorithm-cs</artifactId>
-    <version>02.05.50.6</version>
+    <version>02.05.50.7</version>
 </dependency>
 ```
 
 or via Gradle:
 
 ```groovy
-compile 'com.imsweb:staging-algorithm-cs:02.05.50.6'
+compile 'com.imsweb:staging-algorithm-cs:02.05.50.7'
 ```
 
 ## Usage
@@ -67,7 +67,7 @@ Set<String> schemaIds = staging.getSchemaIds();
 To get a single schema by identifer,
 
 ```java
-StagingSchema schema = staging.getSchema("prostate");
+Schema schema = staging.getSchema("prostate");
 ```
 
 ### Tables
@@ -98,7 +98,7 @@ Set<String> tableIds = staging.getInvolvedTables("prostate");
 To get a single table by identifer,
 
 ```java
-StagingTable table = staging.getTable("ajcc7_stage");
+Table table = staging.getTable("ajcc7_stage");
 ```
 
 ### Lookup a schema
@@ -109,7 +109,7 @@ a `SchemaLookup` object customized for the specific inputs needed to lookup a sc
 For Collaborative Staging, use the `CsSchemaLookup` object.  Here is a lookup based on site and histology.
 
 ```java
-List<StagingSchema> lookup = staging.lookupSchema(new CsSchemaLookup("C629", "9231"));
+List<Schema> lookup = staging.lookupSchema(new CsSchemaLookup("C629", "9231"));
 assertEquals(1, lookup.size());
 assertEquals("testis", lookup.get(0).getId());
 ```
@@ -120,7 +120,7 @@ Other staging algorithms may use different sets of discriminators that can be de
 
 ```java
 // do not supply a discriminator
-List<StagingSchema> lookup = staging.lookupSchema(new CsSchemaLookup("C111", "8200"));
+List<Schema> lookup = staging.lookupSchema(new CsSchemaLookup("C111", "8200"));
 assertEquals(2, lookup.size());
 for (StagingSchema schema : lookup)
     assertTrue(schema.getSchemaDiscriminators().contains(CsStagingData.SSF25_KEY));
