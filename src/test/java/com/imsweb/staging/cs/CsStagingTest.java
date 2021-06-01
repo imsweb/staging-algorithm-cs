@@ -39,6 +39,7 @@ import com.imsweb.staging.entities.StagingData;
 import com.imsweb.staging.entities.StagingData.Result;
 import com.imsweb.staging.entities.Table;
 import com.imsweb.staging.entities.TableRow;
+import com.imsweb.staging.entities.impl.StagingMetadata;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -766,8 +767,8 @@ public class CsStagingTest extends StagingTest {
 
         // test metadata
         assertNull(schema.getInputMap().get("ssf11").getMetadata());
-        assertTrue(schema.getInputMap().get("ssf17").getMetadata().contains("UNDEFINED_SSF"));
-        assertTrue(schema.getInputMap().get("ssf7").getMetadata().contains("SEER_CLINICALLY_SIGNIFICANT"));
+        assertTrue(schema.getInputMap().get("ssf17").getMetadata().contains(new StagingMetadata("UNDEFINED_SSF")));
+        assertTrue(schema.getInputMap().get("ssf7").getMetadata().contains(new StagingMetadata("SEER_CLINICALLY_SIGNIFICANT")));
 
         Map<String, String> context = new HashMap<>();
         context.put(StagingData.PRIMARY_SITE_KEY, "C629");
