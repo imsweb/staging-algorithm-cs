@@ -3,15 +3,17 @@
  */
 package com.imsweb.staging.cs;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 import com.imsweb.staging.IntegrationUtils;
@@ -24,58 +26,42 @@ public class CsIntegrationTest {
 
     // set this to null to process all, or a list of schema filename to process
     private static final List<String> _SCHEMA_FILES = Collections.emptyList();
-    //private static final List<String> _SCHEMA_FILES = Arrays.asList("corpus_carcinoma.gz");
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        // hard-code data directory based on Windows vs Linux
-        List<String> dataDirectories;
-        if (System.getProperty("os.name").toLowerCase().contains("windows"))
-            dataDirectories = Collections.singletonList("p:/csb/Staging/CS");
-        else
-            dataDirectories = Collections.singletonList("/prj/csb/Staging/CS");
-
-        for (String dataDirectory : dataDirectories) {
-            System.out.println("*******************************************");
-            System.out.println("EXECUTING CASES IN " + dataDirectory);
-            System.out.println("*******************************************");
-            execute(dataDirectory);
-        }
+        execute();
     }
 
-    private static void execute(String dataDirectory) throws IOException, InterruptedException {
+    private static void execute() throws IOException, InterruptedException {
         Staging staging = Staging.getInstance(CsDataProvider.getInstance(CsVersion.v020550));
 
         // only do schema selection test if running all schemas
         if (_SCHEMA_FILES.isEmpty()) {
-            IntegrationUtils.processSchemaSelection(staging, "cs_schema_identification.txt.gz", new GZIPInputStream(new FileInputStream(
-                    dataDirectory + "/schema_selection/cs_schema_identification.txt.gz")));
+            IntegrationUtils.processSchemaSelection(staging, "cs_schema_identification.txt.gz",
+                    new GZIPInputStream(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("integration/schema_selection/cs_schema_identification.txt.gz"))));
 
             System.out.println("-----------------------------------------------");
         }
 
         Stopwatch stopwatch = Stopwatch.create();
 
+        // get list of schema files
+        List<String> schemaFiles;
+        try (BufferedReader buffer = new BufferedReader(
+                new InputStreamReader(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("integration/schemas/index.txt")), StandardCharsets.UTF_8))) {
+            schemaFiles = buffer.lines().collect(Collectors.toList());
+        }
+
         long totalFiles = 0;
         long totalCases = 0;
         long totalFailures = 0;
 
-        // get the complete list of files
-        File folder = new File(dataDirectory);
-        File[] files = folder.listFiles();
-
-        if (files != null) {
-            // sort the files by name
-            Arrays.sort(files);
-
-            for (File f : files) {
-                if (f.isFile() && f.getName().endsWith(".gz")) {
-                    if (_SCHEMA_FILES.isEmpty() || _SCHEMA_FILES.contains(f.getName())) {
-                        totalFiles += 1;
-                        IntegrationResult result = IntegrationUtils.processSchema(staging, f.getName(), new GZIPInputStream(new FileInputStream(f)));
-                        totalCases += result.getNumCases();
-                        totalFailures += result.getNumFailures();
-                    }
-                }
+        for (String schemaFile : schemaFiles) {
+            if (_SCHEMA_FILES.isEmpty() || _SCHEMA_FILES.contains(schemaFile)) {
+                totalFiles += 1;
+                IntegrationResult result = IntegrationUtils.processSchema(staging, schemaFile,
+                        new GZIPInputStream(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResourceAsStream("integration/schemas/" + schemaFile))));
+                totalCases += result.getNumCases();
+                totalFailures += result.getNumFailures();
             }
         }
 
@@ -85,6 +71,7 @@ public class CsIntegrationTest {
         System.out.println();
         System.out.println("Completed " + NumberFormat.getNumberInstance(Locale.US).format(totalCases) + " cases (" + totalFiles + " files) in " + stopwatch + " (" + perMs + "ms/case).");
         if (totalFailures > 0)
-            System.out.println("There were " + totalFailures + " failing cases.");
+            System.out.println("There were " + NumberFormat.getNumberInstance(Locale.US).format(totalFailures) + " failing cases.");
     }
+
 }
