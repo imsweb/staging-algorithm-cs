@@ -3,7 +3,7 @@
 # This is just a proof of concept for now since the raw input is not available as it
 # is too large to include in repository.
 
-name: integration
+name: cs-comparison
 
 on: workflow_dispatch
 
