@@ -5,9 +5,7 @@
 
 name: integration
 
-on:
-  repository_dispatch:
-    types: manual-cs-comparison
+on: workflow_dispatch
 
 jobs:
   build:
