@@ -1,17 +1,17 @@
 plugins {
     id 'java-library'
     id 'checkstyle'
-    id 'com.github.spotbugs' version '4.7.1'
+    id 'com.github.spotbugs' version '5.0.6'
     id 'maven-publish'
     id 'signing'
     id 'io.codearte.nexus-staging' version '0.30.0'  // logs into Sonotype OSS and does a 'Close' and 'Release'
-    id 'com.adarshr.test-logger' version '3.1.0'
-    id 'com.github.ben-manes.versions' version '0.39.0'
-    id 'org.sonatype.gradle.plugins.scan' version '2.2.2'
+    id 'com.adarshr.test-logger' version '3.2.0'
+    id 'com.github.ben-manes.versions' version '0.42.0'
+    id 'org.sonatype.gradle.plugins.scan' version '2.2.3'
 }
 
 group = 'com.imsweb'
-version = '02.05.50.9'
+version = '02.05.50.10'
 description = 'Collaborative Stage algorithm for the java-staging-client'
 
 tasks.withType(JavaCompile) {
@@ -32,9 +32,9 @@ repositories {
 }
 
 dependencies {
-    spotbugs 'com.github.spotbugs:spotbugs:4.2.3'
+    spotbugs 'com.github.spotbugs:spotbugs:4.6.0'
 
-    api 'com.imsweb:staging-client-java:6.2.0'
+    api 'com.imsweb:staging-client-java:6.3.0'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -178,6 +178,6 @@ nexusStaging {
 }
 
 wrapper {
-    gradleVersion = '7.3.2'
+    gradleVersion = '7.4.2'
     distributionType = Wrapper.DistributionType.ALL
 }
