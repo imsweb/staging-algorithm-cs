@@ -52,7 +52,7 @@ public class CsStagingTest extends StagingTest {
 
     @BeforeClass
     public static void init() {
-        _STAGING = Staging.getInstance(CsDataProvider.getInstance(CsVersion.v020550));
+        _STAGING = Staging.getInstance(CsDataProvider.getInstance(CsVersion.V020550));
     }
 
     @Override
@@ -62,12 +62,12 @@ public class CsStagingTest extends StagingTest {
 
     @Override
     public String getVersion() {
-        return CsVersion.v020550.getVersion();
+        return CsVersion.V020550.getVersion();
     }
 
     @Override
     public StagingFileDataProvider getProvider() {
-        return CsDataProvider.getInstance(CsVersion.v020550);
+        return CsDataProvider.getInstance(CsVersion.V020550);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class CsStagingTest extends StagingTest {
 
     @Test
     public void testVersionInitializationTypes() {
-        Staging staging020550 = Staging.getInstance(CsDataProvider.getInstance(CsVersion.v020550));
+        Staging staging020550 = Staging.getInstance(CsDataProvider.getInstance(CsVersion.V020550));
         assertEquals("02.05.50", staging020550.getVersion());
 
         Staging stagingLatest = Staging.getInstance(CsDataProvider.getInstance());
