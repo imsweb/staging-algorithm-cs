@@ -5,6 +5,7 @@ package com.imsweb.staging.cs;
 
 import com.imsweb.staging.entities.StagingData;
 
+@SuppressWarnings("java:S1192")
 public class CsStagingData extends StagingData {
 
     // key definitions
@@ -56,7 +57,8 @@ public class CsStagingData extends StagingData {
         SSF21("ssf21"),
         SSF22("ssf22"),
         SSF23("ssf23"),
-        SSF24("ssf24");
+        SSF24("ssf24"),
+        SSF25("ssf25");
 
         private final String _name;
 
