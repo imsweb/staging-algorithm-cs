@@ -22,6 +22,7 @@ import com.imsweb.staging.Staging;
 import com.imsweb.staging.cs.CsDataProvider.CsVersion;
 import com.imsweb.staging.util.Stopwatch;
 
+@SuppressWarnings("java:S2187")
 public class CsIntegrationTest {
 
     // set this to null to process all, or a list of schema filename to process

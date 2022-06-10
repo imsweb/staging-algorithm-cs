@@ -56,10 +56,9 @@ public class CsStagingData extends StagingData {
         SSF21("ssf21"),
         SSF22("ssf22"),
         SSF23("ssf23"),
-        SSF24("ssf24"),
-        SSF25("ssf25");
+        SSF24("ssf24");
 
-        private String _name;
+        private final String _name;
 
         CsInput(String name) {
             _name = name;
