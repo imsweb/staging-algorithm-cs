@@ -39,7 +39,7 @@ object is thread safe and cached so subsequent calls to `Staging.getInstance()` 
 For example, to get an instance of the Collaborative Staging algorithm
 
 ```java
-Staging staging = Staging.getInstance(CsDataProvider.getInstance(CsVersion.v020550));
+Staging staging=Staging.getInstance(CsDataProvider.getInstance(CsVersion.LATEST));
 ```
 
 ### Schemas

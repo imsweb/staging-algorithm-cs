@@ -32,7 +32,7 @@ public class CsIntegrationTest {
     }
 
     private static void execute() throws IOException, InterruptedException {
-        Staging staging = Staging.getInstance(CsDataProvider.getInstance(CsVersion.v020550));
+        Staging staging = Staging.getInstance(CsDataProvider.getInstance(CsVersion.V020550));
 
         // only do schema selection test if running all schemas
         if (_SCHEMA_FILES.isEmpty()) {

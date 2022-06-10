@@ -14,9 +14,9 @@ public final class CsDataProvider extends StagingFileDataProvider {
 
     public enum CsVersion {
         LATEST("02.05.50"),
-        v020550("02.05.50");
+        V020550("02.05.50");
 
-        private String _version;
+        private final String _version;
 
         CsVersion(String version) {
             _version = version;
@@ -49,13 +49,6 @@ public final class CsDataProvider extends StagingFileDataProvider {
      * @return the data provider
      */
     public static synchronized CsDataProvider getInstance(CsVersion version) {
-        CsDataProvider provider = _PROVIDERS.get(version);
-
-        if (provider == null) {
-            provider = new CsDataProvider(version);
-            _PROVIDERS.put(version, provider);
-        }
-
-        return provider;
+        return _PROVIDERS.computeIfAbsent(version, k -> new CsDataProvider(version));
     }
 }
