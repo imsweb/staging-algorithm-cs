@@ -3,8 +3,10 @@
 [![integration](https://github.com/imsweb/staging-algorithm-cs/workflows/integration/badge.svg)](https://github.com/imsweb/staging-algorithm-cs/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.imsweb/staging-algorithm-cs/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.imsweb/staging-algorithm-cs)
 
-[Collaborative Stage](https://cancerstaging.org/cstage/) is a unified data collection system designed to provide a common data set to meet the 
-needs of all three staging systems (TNM, SEER EOD, and SEER SS). It provides a comprehensive system to improve data quality by standardizing 
+## This project has been moved to [staging-client-java](https://github.com/imsweb/staging-client-java).
+
+[Collaborative Stage](https://cancerstaging.org/cstage/) is a unified data collection system designed to provide a common data set to meet the
+needs of all three staging systems (TNM, SEER EOD, and SEER SS). It provides a comprehensive system to improve data quality by standardizing
 rules for timing, clinical and pathologic assessments, and compatibility across all of the systems for all cancer sites.
 
 ## Download
